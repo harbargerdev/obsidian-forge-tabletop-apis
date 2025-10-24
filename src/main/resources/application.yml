@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: Obsidian Forge Tabletop APIs
+  cassandra:
+    enabled: false
+  liquibase:
+    enabled: false
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,metrics,env
+  logging:
+    level:
+      root: INFO
+      com.obsidianforge.tabletopapis: DEBUG

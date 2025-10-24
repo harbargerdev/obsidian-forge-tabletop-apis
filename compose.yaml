@@ -1,17 +1,4 @@
 services:
-  cassandra:
-    image: 'cassandra:latest'
-    environment:
-      - 'CASSANDRA_DC=dc1'
-      - 'CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch'
-    ports:
-      - '9042'
-  grafana-lgtm:
-    image: 'grafana/otel-lgtm:latest'
-    ports:
-      - '3000'
-      - '4317'
-      - '4318'
   postgres:
     image: 'postgres:latest'
     environment:

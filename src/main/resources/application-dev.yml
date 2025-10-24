@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://dev-db-host:5432/devdb
+    username: devuser
+    password: devpassword
+  liquibase:
+    enabled: true

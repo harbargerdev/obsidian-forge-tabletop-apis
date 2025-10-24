@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://prod-db-host:5432/proddb
+    username: produser
+    password: prodpassword
+  liquibase:
+    enabled: true

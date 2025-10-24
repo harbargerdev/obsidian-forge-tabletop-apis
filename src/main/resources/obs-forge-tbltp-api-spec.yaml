@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: Obsidian Forge API
+  description: API specification for the Obsidian Forge applications (Tabletop Hub and Killer-Escape).
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Base URL for the API
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - shared
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+        '401':
+          description: Unauthorized
+
+  /auth/register:
+    post:
+      tags:
+        - shared
+      summary: User registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad request
+
+  /games:
+    get:
+      tags:
+        - hub
+      summary: List all games
+      responses:
+        '200':
+          description: A list of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+
+  /games/{gameId}:
+    get:
+      tags:
+        - hub
+      summary: Get game details
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  description:
+                    type: string
+
+  /killer-escape/sessions:
+    post:
+      tags:
+        - killer-escape
+      summary: Create a new game session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                playerId:
+                  type: string
+                settings:
+                  type: object
+      responses:
+        '201':
+          description: Game session created
+        '400':
+          description: Bad request
+
+  /killer-escape/sessions/{sessionId}:
+    get:
+      tags:
+        - killer-escape
+      summary: Get game session details
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Game session details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionId:
+                    type: string
+                  players:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                  settings:
+                    type: object

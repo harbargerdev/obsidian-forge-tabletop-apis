@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.openapitools:openapi-generator-gradle-plugin:7.13.0"
+    }
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.0-M3'
@@ -37,12 +47,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-liquibase'
-	implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation "io.swagger:swagger-codegen-maven-plugin:2.4.48"
-	
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0"
+
 	compileOnly 'org.projectlombok:lombok'
 	
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
@@ -71,30 +80,28 @@ dependencyManagement {
 	}
 }
 
-tasks.register('generateSwaggerCode') {
-	group = 'build'
-	description = 'Generates code from the Swagger definition.'
+apply plugin: "org.openapi.generator"
 
-	// Path to the OpenAPI specification file
-	def inputSpec = file('src/main/resources/swagger/api.yaml').absolutePath
-
-	// Output directory for the generated code
-	def outputDir = file("$buildDir/generated-sources/swagger")
-
-	// Command to execute Swagger Codegen
-	commandLine 'java', '-jar', 'path/to/swagger-codegen-cli.jar',
-                'generate',
-                '-i', inputSpec,
-                '-l', 'java',
-                '-o', outputDir
-
-    // Ensure the output directory exists
-    doFirst {
-        outputDir.mkdirs()
-    }
+openApiGenerate {
+    generatorName.set("spring")
+    inputSpec.set("$rootDir/src/main/resources/api-spec.yaml".toString())
+    outputDir.set("$buildDir/generated".toString())
+    apiPackage.set("com.obsidianforge.tts.api")
+    modelPackage.set("com.obsidianforge.tts.model")
+    configOptions.set([
+            dateLibrary         : "java8",
+            library              : "spring-boot",
+            reactive             : "false",
+            useBeanValidation    : "true",
+            delegatePattern      : "true",
+            performBeanValidation: "true",
+            interfaceOnly       : "false",
+            useSpringBoot3      : "true",
+            useSwaggerUI        : "true"
+    ])
 }
 
-sourceSets.main.java.srcDirs += file("$buildDir/generated-sources/swagger/src/main/java")
+compileJava.dependsOn tasks.named("openApiGenerate")
 
 tasks.named('test') {
 	useJUnitPlatform()

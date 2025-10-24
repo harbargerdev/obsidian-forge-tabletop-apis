@@ -9,8 +9,15 @@ spring:
     endpoints:
       web:
         exposure:
-          include: health,info,metrics,env
+          include: health,info,metrics,env, openapi, swagger-ui
+    metrics:
+      export:
+        otlp:
+          enabled: false
   logging:
     level:
       root: INFO
       com.obsidianforge.tabletopapis: DEBUG
+      org.springframework.web: DEBUG
+      org.springframework.http: DEBUG
+
